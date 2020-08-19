@@ -38,3 +38,10 @@ export function reqUpdateSubject(id, title) {
     },
   })
 }
+// 删除课程分类
+export function reqDeleteSubject(id) {
+  return request({
+    url: `${BASE_URL}/remove/${id}`,
+    method: "DELETE",
+  })
+}

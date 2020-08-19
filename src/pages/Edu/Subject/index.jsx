@@ -1,13 +1,13 @@
 import React, { Component } from "react"
-import { Button, Table, Tooltip, Input, message } from "antd"
+import { Button, Table, Tooltip, Input, message, Modal } from "antd"
 import { PlusOutlined, FormOutlined, DeleteOutlined } from "@ant-design/icons"
 import { connect } from "react-redux"
 import {
   getSubjectList,
   getSecSubjectList,
   updateSubjectList,
+  deleteSubjectList,
 } from "./redux/actions"
-import { reqUpdateSubject } from "@api/edu/subject"
 
 import "./index.less"
 
@@ -15,7 +15,7 @@ import "./index.less"
   (state) => ({
     subjectList: state.subjectList,
   }),
-  { getSubjectList, getSecSubjectList, updateSubjectList }
+  { getSubjectList, getSecSubjectList, updateSubjectList, deleteSubjectList }
 )
 class Subject extends Component {
   state = {
@@ -26,27 +26,31 @@ class Subject extends Component {
   componentDidMount() {
     this.props.getSubjectList(1, 10)
   }
-
+  // 页面发生变化触发的回调
   handleChange = (page, pageSize) => {
     this.setState({
       page: page,
     })
     this.props.getSubjectList(page, pageSize)
   }
+  // 改变页面展示数量的回调
   handleShowSizeChange = (page, pageSize) => {
     this.setState({
       page: page,
     })
     this.props.getSubjectList(page, pageSize)
   }
+  // 点击展开回调
   handleExpand = (expanded, record) => {
     if (expanded) {
       this.props.getSecSubjectList(record._id)
     }
   }
+  // 点击新建跳转
   handleToAdd = () => {
     this.props.history.push("/edu/subject/add")
   }
+  // 点击更新回调
   handleUpdate = ({ _id, title }) => () => {
     this.setState({
       subjectid: _id,
@@ -54,18 +58,21 @@ class Subject extends Component {
     })
     this.title = title
   }
+  // 点击更新 受控组件的回调
   handleUpdateChange = (e) => {
     this.setState({
       title: e.target.value,
     })
   }
+  // 点击取消的回调
   handleCancle = () => {
     this.setState({
       subjectid: "",
       title: "",
     })
   }
-  handleConfirm = (record) => {
+  // 点击确认的回调
+  handleConfirm = async () => {
     if (!this.state.title.trim()) {
       message.warning("请输入正确标题名称")
       return
@@ -78,9 +85,36 @@ class Subject extends Component {
     let id = this.state.subjectid
     let title = this.state.title
     // reqUpdateSubject(id, title)
-    this.props.updateSubjectList(id, title)
+    await this.props.updateSubjectList(id, title)
     this.handleCancle()
     message.success("更新标题成功")
+  }
+  // 点击删除回调
+  handleDelete = (record) => () => {
+    Modal.confirm({
+      title: (
+        <div>
+          你确定删除
+          <span style={{ color: "red", margin: "0 10px" }}>{record.title}</span>
+          吗？
+        </div>
+      ),
+      onOk: async () => {
+        await this.props.deleteSubjectList(record._id)
+        message.success("删除课程成功")
+        if (record.parentId === "0") {
+          if (
+            this.state.page > 1 &&
+            this.props.subjectList.items.length <= 0 &&
+            record.parentId === "0"
+          ) {
+            this.props.getSubjectList(--this.state.page, 10)
+          } else {
+            this.props.getSubjectList(this.state.page, 10)
+          }
+        }
+      },
+    })
   }
   render() {
     const columns = [
@@ -139,6 +173,7 @@ class Subject extends Component {
                     type="danger"
                     icon={<DeleteOutlined />}
                     style={{ width: 40 }}
+                    onClick={this.handleDelete(record)}
                   ></Button>
                 </Tooltip>
               </>

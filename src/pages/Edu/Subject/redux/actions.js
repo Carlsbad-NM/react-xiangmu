@@ -2,12 +2,14 @@ import {
   reqGetSubject,
   reqGetSecSubject,
   reqUpdateSubject,
+  reqDeleteSubject,
 } from "@api/edu/subject"
 
 import {
   GET_SUBJECT_LIST,
   GET_SEC_SUBJECT_LIST,
   UPDATE_SUBJECT_LIST,
+  DELETE_SUBJECT_LIST,
 } from "./constants"
 
 // 获取课程分类一级列表数据
@@ -50,7 +52,22 @@ export const updateSubjectList = (id, title) => {
   return (dispatch) => {
     return reqUpdateSubject(id, title).then((response) => {
       dispatch(updateSubjectListSync({ id, title }))
-      return response.total
+      return response
+    })
+  }
+}
+
+// 删除课程分类数据
+const deleteteSubjectListSync = (data) => ({
+  type: DELETE_SUBJECT_LIST,
+  data,
+})
+
+export const deleteSubjectList = (id) => {
+  return (dispatch) => {
+    return reqDeleteSubject(id).then((response) => {
+      dispatch(deleteteSubjectListSync(id))
+      return response
     })
   }
 }

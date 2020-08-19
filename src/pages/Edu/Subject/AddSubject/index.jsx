@@ -80,7 +80,7 @@ export default class index extends Component {
                 )
               }}
             >
-              <Select.Option value={1} key={0}>
+              <Select.Option value={0} key={0}>
                 一级菜单
               </Select.Option>
               {this.state.items.map((item) => (

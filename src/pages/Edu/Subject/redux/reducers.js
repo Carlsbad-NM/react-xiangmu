@@ -2,6 +2,7 @@ import {
   GET_SUBJECT_LIST,
   GET_SEC_SUBJECT_LIST,
   UPDATE_SUBJECT_LIST,
+  DELETE_SUBJECT_LIST,
 } from "./constants"
 
 const initSubjectList = {
@@ -48,6 +49,26 @@ export default function subjectList(prevState = initSubjectList, action) {
       })
       return {
         ...prevState,
+      }
+
+    case DELETE_SUBJECT_LIST:
+      const newSubject = [...prevState.items]
+      newSubject.forEach((item, index) => {
+        if (item._id === action.data) {
+          newSubject.splice(index, 1)
+          return
+        }
+
+        item.children.forEach((secItem, index) => {
+          if (secItem._id === action.data) {
+            item.children.splice(index, 1)
+            return
+          }
+        })
+      })
+      return {
+        ...prevState,
+        items: newSubject,
       }
 
     default:

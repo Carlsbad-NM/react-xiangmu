@@ -202,7 +202,7 @@ class Subject extends Component {
             // ),
             // rowExpandable: (record) => record.name !== "Not Expandable",
 
-            // 当父级内部有childern属性时，就会自动生成展开按钮
+            // 当父级内部有children属性时，就会自动生成展开按钮
             onExpand: this.handleExpand,
           }}
           dataSource={this.props.subjectList.items}

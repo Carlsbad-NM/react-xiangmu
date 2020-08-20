@@ -1,4 +1,4 @@
-import subjectList from "./reducers"
+import subjectList from "./reducer"
 import {
   getSubjectList,
   getSecSubjectList,

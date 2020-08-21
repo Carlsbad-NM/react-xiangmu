@@ -9,7 +9,7 @@ const layout = {
   wrapperCol: { span: 6 },
 }
 
-export default class index extends Component {
+export default class AddSubject extends Component {
   page = 1
   state = {
     total: 0,

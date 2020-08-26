@@ -8,6 +8,11 @@ import { reqGetUploadToken } from "@api/edu/lesson"
 export default class MyUpload extends Component {
   constructor() {
     super()
+
+    this.state = {
+      isShowUpload: true,
+    }
+
     const jsonStr = localStorage.getItem("uploadToken")
 
     if (jsonStr) {
@@ -17,10 +22,10 @@ export default class MyUpload extends Component {
     this.tokenObj = {}
   }
   handleBeforeUpload = (file, fileList) => {
-    const MAX_SIZE = 10 * 1024 * 1024
+    const MAX_SIZE = 5 * 1024 * 1024
     return new Promise(async (resolve, reject) => {
       if (file.size > MAX_SIZE) {
-        message.warning("上传文件需小于10M")
+        message.warning("上传文件需小于5M")
         return reject()
       }
       if (this.tokenObj.expires && this.tokenObj.expires > Date.now()) {
@@ -57,6 +62,9 @@ export default class MyUpload extends Component {
         // 上传成功,会有一个成功的效果
         console.log("上传完成", res)
         onSuccess(res)
+        this.setState({
+          isShowUpload: false,
+        })
 
         this.props.onChange(`http://qfek6fw0b.hn-bkt.clouddn.com/${res.key}`)
       },
@@ -91,6 +99,9 @@ export default class MyUpload extends Component {
 
   handleRemove = () => {
     this.props.onChange("")
+    this.setState({
+      isShowUpload: true,
+    })
   }
   render() {
     return (
@@ -103,9 +114,11 @@ export default class MyUpload extends Component {
         // 当删除上传视频的时候触发
         onRemove={this.handleRemove}
       >
-        <Button>
-          <UploadOutlined /> 上传视频
-        </Button>
+        {this.state.isShowUpload && (
+          <Button>
+            <UploadOutlined /> 上传视频
+          </Button>
+        )}
       </Upload>
     )
   }

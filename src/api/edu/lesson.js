@@ -31,3 +31,14 @@ export function addLesson({ chapterId, title, free, video }) {
     },
   })
 }
+
+// 批量删除课时列表
+export function reqDelLessonList(lessonIdList) {
+  return request({
+    url: `${BASE_URL}/batchRemove`,
+    method: "DELETE",
+    data: {
+      idList: lessonIdList,
+    },
+  })
+}

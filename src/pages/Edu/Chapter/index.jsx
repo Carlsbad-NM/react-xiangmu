@@ -10,12 +10,14 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons"
 import dayjs from "dayjs"
-import { getLessonList } from "./redux"
+import { getLessonList, delChapterList, delLessonList } from "./redux"
 
 import relativeTime from "dayjs/plugin/relativeTime"
+import screenfull from "screenfull"
 
 import { connect } from "react-redux"
 import SearchForm from "./SearchForm"
+import Player from "griffith"
 
 import "./index.less"
 
@@ -25,7 +27,7 @@ dayjs.extend(relativeTime)
   (state) => ({
     chapterList: state.chapterList.chapterList,
   }),
-  { getLessonList }
+  { getLessonList, delChapterList, delLessonList }
 )
 class Chapter extends Component {
   state = {
@@ -33,6 +35,7 @@ class Chapter extends Component {
     previewVisible: false,
     previewImage: "",
     selectedRowKeys: [],
+    play_url: "",
   }
 
   showImgModal = (img) => {
@@ -97,6 +100,32 @@ class Chapter extends Component {
     this.props.history.push("/edu/chapter/addlesson", data)
   }
 
+  handlePreviewVideo = (record) => () => {
+    this.setState({
+      previewVisible: true,
+      play_url: record.video,
+    })
+  }
+
+  handleBatchRemove = async () => {
+    const chapterIdList = []
+    this.props.chapterList.forEach((item) => {
+      if (this.state.selectedRowKeys.indexOf(item._id) > -1) {
+        chapterIdList.push(item._id)
+      }
+    })
+
+    const lessoneIdList = this.state.selectedRowKeys.filter((item) => {
+      if (chapterIdList.indexOf(item) !== -1) {
+        return false
+      }
+      return true
+    })
+
+    await this.props.delChapterList(chapterIdList)
+    await this.props.delLessonList(lessoneIdList)
+    message.success("删除成功")
+  }
   render() {
     const { previewVisible, previewImage, selectedRowKeys } = this.state
 
@@ -116,7 +145,9 @@ class Chapter extends Component {
         title: "视频",
         // dataIndex: "free",
         render: (record) => {
-          return record.free ? <Button>预览</Button> : null
+          return record.free ? (
+            <Button onClick={this.handlePreviewVideo(record)}>预览</Button>
+          ) : null
         },
       },
       {
@@ -147,80 +178,80 @@ class Chapter extends Component {
       },
     ]
 
-    // const data = [
-    //   {
-    //     id: "111",
-    //     title: "第一章节",
-    //     children: [
-    //       {
-    //         id: "1",
-    //         title: "第一课时",
-    //         free: false,
-    //         videoSourceId: "756cf06db9cb4f30be85a9758b19c645",
-    //       },
-    //       {
-    //         id: "2",
-    //         title: "第二课时",
-    //         free: true,
-    //         videoSourceId: "2a02d726622f4c7089d44cb993c531e1",
-    //       },
-    //       {
-    //         id: "3",
-    //         title: "第三课时",
-    //         free: true,
-    //         videoSourceId: "4e560c892fdf4fa2b42e0671aa42fa9d",
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     id: "222",
-    //     title: "第二章节",
-    //     children: [
-    //       {
-    //         id: "4",
-    //         title: "第一课时",
-    //         free: false,
-    //         videoSourceId: "756cf06db9cb4f30be85a9758b19c645",
-    //       },
-    //       {
-    //         id: "5",
-    //         title: "第二课时",
-    //         free: true,
-    //         videoSourceId: "2a02d726622f4c7089d44cb993c531e1",
-    //       },
-    //       {
-    //         id: "6",
-    //         title: "第三课时",
-    //         free: true,
-    //         videoSourceId: "4e560c892fdf4fa2b42e0671aa42fa9d",
-    //       },
-    //     ],
-    //   },
-    //   {
-    //     id: "333",
-    //     title: "第三章节",
-    //     children: [
-    //       {
-    //         id: "1192252824606289921",
-    //         title: "第一课时",
-    //         free: false,
-    //         videoSourceId: "756cf06db9cb4f30be85a9758b19c645",
-    //       },
-    //       {
-    //         id: "1192628092797730818",
-    //         title: "第二课时",
-    //         free: true,
-    //         videoSourceId: "2a02d726622f4c7089d44cb993c531e1",
-    //       },
-    //       {
-    //         id: "1192632495013380097",
-    //         title: "第三课时",
-    //         free: true,
-    //         videoSourceId: "4e560c892fdf4fa2b42e0671aa42fa9d",
-    //       },
-    //     ],
-    //   },
-    // ]
+    const data = [
+      {
+        id: "111",
+        title: "第一章节",
+        children: [
+          {
+            id: "1",
+            title: "第一课时",
+            free: false,
+            videoSourceId: "756cf06db9cb4f30be85a9758b19c645",
+          },
+          {
+            id: "2",
+            title: "第二课时",
+            free: true,
+            videoSourceId: "2a02d726622f4c7089d44cb993c531e1",
+          },
+          {
+            id: "3",
+            title: "第三课时",
+            free: true,
+            videoSourceId: "4e560c892fdf4fa2b42e0671aa42fa9d",
+          },
+        ],
+      },
+      {
+        id: "222",
+        title: "第二章节",
+        children: [
+          {
+            id: "4",
+            title: "第一课时",
+            free: false,
+            videoSourceId: "756cf06db9cb4f30be85a9758b19c645",
+          },
+          {
+            id: "5",
+            title: "第二课时",
+            free: true,
+            videoSourceId: "2a02d726622f4c7089d44cb993c531e1",
+          },
+          {
+            id: "6",
+            title: "第三课时",
+            free: true,
+            videoSourceId: "4e560c892fdf4fa2b42e0671aa42fa9d",
+          },
+        ],
+      },
+      {
+        id: "333",
+        title: "第三章节",
+        children: [
+          {
+            id: "1192252824606289921",
+            title: "第一课时",
+            free: false,
+            videoSourceId: "756cf06db9cb4f30be85a9758b19c645",
+          },
+          {
+            id: "1192628092797730818",
+            title: "第二课时",
+            free: true,
+            videoSourceId: "2a02d726622f4c7089d44cb993c531e1",
+          },
+          {
+            id: "1192632495013380097",
+            title: "第三课时",
+            free: true,
+            videoSourceId: "4e560c892fdf4fa2b42e0671aa42fa9d",
+          },
+        ],
+      },
+    ]
 
     const rowSelection = {
       selectedRowKeys,
@@ -260,6 +291,17 @@ class Chapter extends Component {
       // ]
     }
 
+    const sources = {
+      hd: {
+        play_url: this.state.play_url,
+        bitrate: 1,
+        duration: 1000,
+        format: "",
+        height: 500,
+        size: 160000,
+        width: 500,
+      },
+    }
     return (
       <div>
         <div className="course-search">
@@ -273,11 +315,20 @@ class Chapter extends Component {
                 <PlusOutlined />
                 <span>新增</span>
               </Button>
-              <Button type="danger" style={{ marginRight: 10 }}>
+              <Button
+                type="danger"
+                style={{ marginRight: 10 }}
+                onClick={this.handleBatchRemove}
+              >
                 <span>批量删除</span>
               </Button>
               <Tooltip title="全屏" className="course-table-btn">
-                <FullscreenOutlined />
+                <FullscreenOutlined
+                  onClick={() => {
+                    // screenfull.request()
+                    screenfull.toggle()
+                  }}
+                />
               </Tooltip>
               <Tooltip title="刷新" className="course-table-btn">
                 <RedoOutlined />
@@ -312,10 +363,18 @@ class Chapter extends Component {
 
         <Modal
           visible={previewVisible}
+          title="预览课时"
           footer={null}
           onCancel={this.handleImgModal}
+          // 点击关闭，销毁子节点
+          destroyOnClose={true}
         >
-          <img alt="example" style={{ width: "100%" }} src={previewImage} />
+          <Player
+            sources={sources}
+            id={"1"}
+            cover={"http://localhost:3000/logo.png"}
+            duration={1000}
+          ></Player>
         </Modal>
       </div>
     )

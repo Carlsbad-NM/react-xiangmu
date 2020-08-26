@@ -45,3 +45,10 @@ export function reqDeleteSubject(id) {
     method: "DELETE",
   })
 }
+// 获取所有课程分类
+export function reqGetAllSubject() {
+  return request({
+    url: `${BASE_URL}`,
+    method: "GET",
+  })
+}

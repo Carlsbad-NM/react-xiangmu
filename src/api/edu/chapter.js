@@ -12,3 +12,14 @@ export function reqGetChapterList(courseId) {
     },
   })
 }
+
+// 批量删除章节分页列表
+export function reqDelChapterList(chapterIdList) {
+  return request({
+    url: `${BASE_URL}/batchRemove`,
+    method: "DELETE",
+    data: {
+      idList: chapterIdList,
+    },
+  })
+}

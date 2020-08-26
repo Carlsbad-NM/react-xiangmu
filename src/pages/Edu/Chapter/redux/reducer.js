@@ -1,9 +1,14 @@
-import { GET_ALL_COURSE, GET_CHAPTER_LIST, GET_LESSON_LIST } from "./constants"
+import {
+  GET_ALL_COURSE,
+  GET_CHAPTER_LIST,
+  GET_LESSON_LIST,
+  DEL_CHAPTER_LIST,
+  DEL_LESSON_LIST,
+} from "./constants"
 
 const initChapter = {
   allCourseList: [],
   chapterList: [],
-  lessonList: [],
 }
 export default function chapterList(prevState = initChapter, action) {
   switch (action.type) {
@@ -32,6 +37,38 @@ export default function chapterList(prevState = initChapter, action) {
       return {
         ...prevState,
         chapterList: newChapterList,
+      }
+
+    case DEL_CHAPTER_LIST:
+      const chapterListOne = [...prevState.chapterList]
+      const delChapterIds = action.data
+
+      const newChapters = chapterListOne.filter((item) => {
+        if (delChapterIds.indexOf(item._id) > -1) {
+          return false
+        }
+        return true
+      })
+      return {
+        ...prevState,
+        chapterList: newChapters,
+      }
+
+    case DEL_LESSON_LIST:
+      const chapterListTwo = [...prevState.chapterList]
+      const delLessonIds = action.data
+
+      chapterListTwo.forEach((item) => {
+        item.children = item.children.filter((lessonItem) => {
+          if (delLessonIds.indexOf(lessonItem._id) > -1) {
+            return false
+          }
+          return true
+        })
+      })
+      return {
+        ...prevState,
+        chapterList: chapterListTwo,
       }
 
     default:

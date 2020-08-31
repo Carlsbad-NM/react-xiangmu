@@ -1,15 +1,15 @@
 import React, { Component } from "react"
 import { Layout, Menu, Breadcrumb } from "antd"
-import {
-  DesktopOutlined,
-  PieChartOutlined,
-  FileOutlined,
-  TeamOutlined,
-  UserOutlined,
-  GlobalOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
-} from "@ant-design/icons"
+// import {
+//   DesktopOutlined,
+//   PieChartOutlined,
+//   FileOutlined,
+//   TeamOutlined,
+//   UserOutlined,
+//   GlobalOutlined,
+//   MenuUnfoldOutlined,
+//   MenuFoldOutlined,
+// } from "@ant-design/icons"
 import { Link, withRouter } from "react-router-dom"
 import { connect } from "react-redux"
 import { defaultRoutes } from "@conf/routes"

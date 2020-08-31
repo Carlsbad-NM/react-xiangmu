@@ -9,7 +9,6 @@ export function getAllCourseList() {
   return (dispatch) => {
     return reqGetAllCourse().then((res) => {
       dispatch(getAllCourseListSync(res))
-      console.log(res)
     })
   }
 }

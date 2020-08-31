@@ -95,6 +95,10 @@ function LoginForm(props) {
     tabFlag = key
   }
 
+  const gitLogin = () => {
+    window.location.href = `https://github.com/login/oauth/authorize?client_id=853a75af05e10f777919`
+  }
+
   return (
     <>
       <Form
@@ -223,7 +227,7 @@ function LoginForm(props) {
             <Col span={16}>
               <span>
                 其他登陆方式
-                <GithubOutlined className="login-icon" />
+                <GithubOutlined className="login-icon" onClick={gitLogin} />
                 <WechatOutlined className="login-icon" />
                 <QqOutlined className="login-icon" />
               </span>

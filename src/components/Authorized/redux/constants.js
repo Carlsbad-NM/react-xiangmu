@@ -1,3 +1,2 @@
-export const UPDATE_USER = "UPDATE_USER";
-export const UPDATE_PERMISSION_LIST = "UPDATE_PERMISSION_LIST";
-export const RESET_USER = "RESET_USER";
+export const GET_USER_MENU = "GET_USER_MENU"
+export const GET_USER_INFO = "GET_USER_INFO"
